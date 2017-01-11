@@ -2,8 +2,25 @@
 <link rel="import" href="../../components/pd-drawer/pd-drawer.html">
 
 <dom-module id="pd-dashboard">
+    <link rel="stylesheet" href="../../../app/css/main.css" />
+    <link rel="stylesheet" href="../../../app/css/position.css" />
+    <link rel="stylesheet" href="../../../app/css/font.css" />    
     <template>
-        <pd-drawer></pd-drawer>
+        <pd-drawer>
+            <div class="logo">Logo here</div>
+            <div class="left-menu p-t-1">
+                <pd-list-item position="left" icon="home" url="#!">Home</pd-list-item>
+                <pd-list-item position="left" icon="account-box" url="#!/profile">Profile</pd-list-item>
+                <pd-list-item position="left" icon="view-module" url="#!/staff">Staff</pd-list-item>
+                <pd-list-item position="left" icon="exit-to-app" url="/auth/logout">Logout</pd-list-item>
+            </div>
+            <div class="right-menu">
+                Right Menu here
+            </div>
+            <div id="main">
+                Main stuff here
+            </div>
+        </pd-drawer>
     </template>
 </dom-module>
 
