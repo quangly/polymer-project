@@ -1,0 +1,26 @@
+<dom-module id="pd-drawer">
+    <template>
+            <p>LeftShow:<input type="text" value="{{leftShow::input}}"></p>
+            <p>RightShow:<input type="text" value="{{rightShow::input}}"></p>
+            <p>left show value is: <span>{{leftShow}}</span</p>
+            <p>right show value is: <span>{{rightShow}}</span</p>
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: "pd-drawer",
+        properties: {
+            leftShow: {
+                type: Boolean,
+                value: true,
+                readOnly: true
+            },
+            rightShow: {
+                type: Boolean,
+                value: true,
+                readOnly: true
+            }
+        }
+    });
+</script>
