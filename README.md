@@ -9,6 +9,10 @@ cd
 
 bower install
 
+cd
+
+gulp sass
+
 # run
 cd demo-server
 node app.js
