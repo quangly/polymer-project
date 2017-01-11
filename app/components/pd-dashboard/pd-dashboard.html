@@ -5,6 +5,9 @@
 <link rel="import" href="../../../bower_components/iron-icon/iron-icon.html" />
 <link rel="import" href="../../../app/components/pd-list/pd-list-item.html" />
 
+<link rel="import" href="../../../app/components/pd-flatiron-director/pd-flatiron-director.html" />
+<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html" />
+
 <dom-module id="pd-dashboard">
     <link rel="stylesheet" href="../../../app/css/main.css" />
     <link rel="stylesheet" href="../../../app/css/position.css" />
@@ -27,11 +30,54 @@
                 Main stuff here
             </div>
         </pd-drawer>
+        <pd-flatiron-director route="{{route}}"></pd-flatiron-director>
+        <iron-ajax id="ajax" url="" handle-as="document"></iron-ajax>              
     </template>
 </dom-module>
 
 <script>
     Polymer({
-        is: "pd-dashboard"
-    }); 
+        is: "pd-dashboard",
+        properties:{
+            route:{
+                type:String,
+                notify:true,
+                observer: 'routeChanged'
+            }
+        },
+        routeChanged: function (newValue, oldValue) {
+            var page = newValue.replace("!","");
+            var params = page.split("?")[1];
+            var pageName = page.split("?")[0];
+            if(pageName == "") pageName = "home";
+            this.$.ajax.url = "app/pages/" + pageName + "/" + pageName + ".html?" + params;
+            this.$.ajax.generateRequest();
+        },
+        ready:function(){
+            var self = this;
+            self.$.ajax.addEventListener('response', function (response) {
+                try {
+                    self.async(function () {
+
+                        var links = response.detail.response.head.querySelectorAll("link");
+                        for (var i = 0; i <= links.length - 1; i++) {
+                            if (!window.document.head.innerHTML.indexOf(links[i].href.toLowerCase()) 
+                                                                                              != -1) {
+                                var l = document.createElement('link');
+                                l.rel = 'import';
+                                l.href = links[i].href.toLowerCase();
+                                document.head.appendChild(l);
+                            }
+                        }
+
+                        var l = document.createElement('div');
+                        l.innerHTML = response.detail.response.body.innerHTML;
+                        self.$.main.innerHTML = "";
+                        self.$.main.appendChild(l);
+                    }, 0);
+                } catch (e) {
+                }
+            });
+        }
+    });
 </script>
