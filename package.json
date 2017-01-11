@@ -3,10 +3,13 @@
   "name": "PolymerProject",
   "private": true,
   "devDependencies": {
-    "express": "~4.12.4",
+	  "express": "~4.12.4",
     "gulp": "~3.9.0",
     "gulp-sass": "~2.0.4",
-    "gulp-insert": "~0.5.0"
+    "gulp-insert": "~0.5.0",
+    "gulp-load-plugins": "~1.0.0-rc.1",
+    "gulp-rename": "~1.2.2",
+    "run-sequence": "~1.1.2"
   },
   "dependencies": {}
-}  
+}
