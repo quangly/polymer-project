@@ -1,0 +1,53 @@
+<link rel="import" href="../../../../../app/components/pd-card/pd-card.html" />
+<link rel="import" href="../../../../../bower_components/paper-toast/paper-toast.html" />
+<link rel="import" href="../../../../../app/components/pd-select/pd-select.html" />
+<link rel="import" href="../../../../../bower_components/paper-input/paper-input.html" />
+<link rel="import" href="../../../../../bower_components/paper-button/paper-button.html" />
+
+<dom-module id="profile-edit">
+    <template>
+		<pd-card head="Profile Details">
+            <paper-input label="first name" value="{{profile.firstName}}"></paper-input>
+            <paper-input label="last name" value="{{profile.lastName}}"></paper-input>
+            <paper-input label="username" disabled value="{{profile.username}}"></paper-input>
+            <pd-select floatingLabel="true" label="type" value="{{profile.type}}" 
+                options='["itadmin", "teacher", "principle"]' ></pd-select>
+            <pd-select floatingLabel="true" label="status" value="{{profile.status}}" 
+                options='["Active", "Inactive"]' ></pd-select>
+            <paper-button raised colored tabindex="0" class="f-right m-0-5" on-tap="saveProfile">Save</paper-button>
+            <div class="clearfix"></div>
+        </pd-card>
+        <paper-toast id="toast" text=""></paper-toast>
+        <iron-ajax id="getProfile" url="http://localhost:5000/profile" method="GET" handle-as="json"
+            on-response="getProfileCallback" with-credentials="true"></iron-ajax>
+        <iron-ajax id="saveProfileRequest" url="http://localhost:5000/profiles" handle-as="json" method="POST"
+                   on-response="saveProfileCallback" with-credentials="true"></iron-ajax>
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is:"profile-edit",
+        properties:{
+            profile:{
+                type:Object,
+                value:{}
+            }
+        },
+        ready:function(){
+             this.$.getProfile.generateRequest();
+        },
+        getProfileCallback:function(response){
+            this.profile = response.detail.response;
+        },
+        saveProfile:function(){
+            this.$.saveProfileRequest.body = JSON.stringify(this.profile);
+            this.$.saveProfileRequest.contentType = "application/json";
+            this.$.saveProfileRequest.generateRequest();
+        },
+        saveProfileCallback:function(response){
+            this.$.toast.text = "Saved Successfully";
+            this.$.toast.show();
+        }
+    });
+</script>

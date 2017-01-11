@@ -1,0 +1,74 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html"/>
+<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html"/>
+
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html"/>
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html" />
+<link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html" />
+<link rel="import" href="../../../bower_components/iron-a11y-keys/iron-a11y-keys.html" />
+<link rel="import" href="../../../bower_components/paper-toast/paper-toast.html" />
+
+<dom-module id="auth-dialog">
+	<link rel="stylesheet" href="../../css/main.css" />
+    <link rel="stylesheet" href="../../css/position.css" />
+    <link rel="stylesheet" href="../../css/skins/default/colors.css" />
+    <link rel="stylesheet" href="../../pages/auth/auth.css" />
+
+    <template>
+        <div class="main-container" id="dialog">
+            <div class="t-center">
+                Logo here
+            </div>
+            <div class="p-t-2">
+                <paper-input id="username" no-label-float label="Username" 
+                        value="{{user.username}}" autofocus></paper-input>
+                <paper-input no-label-float label="Password" type="password" 
+                        value="{{user.password}}"></paper-input>
+                <paper-checkbox class="f-left remember-me" on-click=""></paper-checkbox>
+                <div class="f-left p-l-0-5 remember-me-txt">Remember me</div>
+                <paper-button on-click="login" tabindex="0" class="c-p f-right login-btn">
+                    Login
+                </paper-button>
+            </div>
+        </div>
+        <paper-toast id="toast" text=""></paper-toast>
+        <iron-ajax id="ajax" url="http://localhost:5000/auth/login" method="POST" handle-as="json"
+                   on-response="loginCallback" with-credentials="true"></iron-ajax>
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: "auth-dialog",
+        properties: {
+            user:{
+                type: Object,
+                value: {
+                    username: "",
+                    password: ""
+                },
+                notify:true
+            }
+        },
+        ready: function(){
+            this.$.username.$.input.focus();
+        },
+        login: function(){
+            var self = this;
+            self.$.ajax.params = {"username": self.user.username, "password": self.user.password};
+            self.$.ajax.generateRequest();
+        },
+        loginCallback:function(response){
+            var self = this;
+            response = response.detail.response;
+            if(response.success){
+                window.location.href = "/";
+            }else{
+                self.$.toast.text = response.error;
+                self.$.toast.hide();
+                self.async(function(){
+                    self.$.toast.show();
+                },100);
+            }
+        }
+    });
+</script>

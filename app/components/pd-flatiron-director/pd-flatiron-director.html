@@ -1,0 +1,40 @@
+<script src="director/director.min.js"></script>
+
+<dom-module id="pd-flatiron-director">
+    <template>
+    </template>
+</dom-module>
+
+<script>
+    (function () {
+        var private_router;
+        Polymer({
+            is: "pd-flatiron-director",
+            properties: {
+				route: {
+                    type: String,
+                    value: "",
+                    notify: true,
+                    reflectToAttribute:true
+                }
+            },
+            ready: function () {
+				var self = this;
+                self.router.on(/(.*)/, function (route) {
+                    self.route = route;
+                }.bind(self));
+                self.route = self.router.getRoute() ?
+                        self.router.getRoute().join(self.router.delimiter) : '';
+                if(self.route == "")
+                    window.location.hash = '!/';
+            },
+            get router() {
+                if (!private_router) {
+                    private_router = new Router();
+                    private_router.init();
+                }
+                return private_router;
+            }
+        });
+    })();
+</script>
