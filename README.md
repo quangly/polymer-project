@@ -1,18 +1,18 @@
-# polymer-project
+Polymer Project
+========
+
 Web Dashboard built in Polymer
-# install
-cd demo-server
 
-npm install
+### Getting Started ###
+* `cd demo-server`
+* `npm install`
 
-cd 
+* `cd`
+* `bower install`
 
-bower install
-
-cd
-
-gulp sass
+* `cd`
+* `gulp sass`
 
 # run
-cd demo-server
-node app.js
+* `cd demo-server`
+* `node app.js`
