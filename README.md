@@ -11,6 +11,7 @@ Web Dashboard built in Polymer
 * `bower install`
 
 * `cd`
+* `npm install -g gulp`
 * `gulp sass`
 
 # run
