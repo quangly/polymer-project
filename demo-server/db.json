@@ -1,0 +1,112 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "bill",
+      "password": "polymer"
+    },
+    {
+      "id": 2,
+      "username": "joy",
+      "password": "material"
+    }
+  ],
+  "friends": [
+    {
+      "username": "bill",
+      "friends": [
+        {
+          "name": "Joy Johnson",
+          "status": "Available",
+          "username": "joy"
+        },
+        {
+          "name": "George Gatsis",
+          "status": "Available",
+          "username": "george"
+        },
+        {
+          "name": "Timos Pless",
+          "status": "Available",
+          "username": "timos"
+        }
+      ]
+    },
+    {
+      "username": "joy",
+      "friends": [
+        {
+          "name": "Bill Stavroulakis",
+          "status": "Available",
+          "username": "bill"
+        }
+      ]
+    }
+  ],
+  "threads": [
+    {
+      "id": 2,
+      "users": "bill,george",
+      "messages": []
+    },
+    {
+      "id": 3,
+      "users": "bill,timos",
+      "messages": []
+    },
+    {
+      "id": 1,
+      "users": "bill,joy",
+      "messages": [
+        {
+          "user": "joy",
+          "message": "We need to talk about your TPS reports.",
+          "datetime": "June 13, 2015 18:07:28"
+        },
+        {
+          "user": "bill",
+          "message": "Yeah. The coversheet. I know, I know. Uh, Bill talked to me about it.",
+          "datetime": "June 13, 2015 18:10:47"
+        },
+        {
+          "user": "joy",
+          "message": "Yeah. Did you get that memo?",
+          "datetime": "June 13, 2015 18:11:22"
+        },
+        {
+          "user": "bill",
+          "message": "Yeah. I got the memo. And I understand the policy. And the problem is just that I forgot the one time. And I've already taken care of it so it's not even really a problem anymore.",
+          "datetime": "June 13, 2015 18:15:23"
+        },
+        {
+          "user": "joy",
+          "message": "Ah! Yeah. It's just we're putting new coversheets on all the TPS reports before they go out now. So if you could go ahead and try to remember to do that from now on, that'd be great. All right!",
+          "datetime": "June 13, 2015 18:20:31"
+        }
+      ]
+    }
+  ],
+  "profiles": [
+    {
+      "firstName": "Joy",
+      "lastName": "Johnson",
+      "type": "itadmin",
+      "username": "joy",
+      "active": "Inactive",
+      "id": 2,
+      "userId": 2,
+      "selected": false
+    },
+    {
+      "firstName": "Bill",
+      "lastName": "Stavroulakis",
+      "type": "teacher",
+      "username": "bill",
+      "active": "Inactive",
+      "id": 4,
+      "selected": false,
+      "userId": 1,
+      "status": "Active"
+    }
+  ]
+}
