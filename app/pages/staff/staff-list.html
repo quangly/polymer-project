@@ -1,0 +1,175 @@
+<link rel="import" href="../../../../../bower_components/paper-button/paper-button.html" />
+<link rel="import" href="../../../../../bower_components/paper-toast/paper-toast.html" />
+<link rel="import" href="../../../../../bower_components/paper-input/paper-input.html" />
+<link rel="import" href="../../../../../bower_components/paper-icon-button/paper-icon-button.html" />
+<link rel="import" href="../../../../../bower_components/iron-icons/editor-icons.html" />
+<link rel="import" href="../../../../../bower_components/paper-checkbox/paper-checkbox.html" />
+
+<link rel="import" href="../../../../../app/components/pd-card/pd-card.html" />
+<link rel="import" href="../../../../../app/components/pd-select/pd-select.html" />
+<link rel="import" href="../../../../../app/components/pd-search/pd-search.html" />
+
+<dom-module id="staff-list">
+    <link rel="stylesheet" href="../../../app/pages/staff/staff.css"/>
+    <style>
+        .edit-panel{
+            background-color:var(--color-neutral-text-bg);
+            padding:1em;
+        }
+        .tbody .tr:nth-child(even){
+            background-color:var(--color-neutral);
+        }
+    </style>
+    <template>
+        
+        <div class$="{{panelToggle}}">
+            <div class="edit-panel shadow-right">
+                <paper-input  floatingLabel="true" label="First Name" value="{{editModel.firstName}}">
+                </paper-input>
+                <paper-input  floatingLabel="true" label="Last Name"  value="{{editModel.lastName}}">
+                </paper-input>
+                <pd-select    floatingLabel="true" label="Type"       value="{{editModel.type}}" 
+                        options='["itadmin", "teacher", "principle"]' ></pd-select>
+                <paper-input  floatingLabel="true" label="Username"   value="{{editModel.username}}">
+                </paper-input>
+                <pd-select    floatingLabel="true" label="Active"     value="{{editModel.active}}"
+                        options='["Active", "Inactive"]'></pd-select>
+                <div class="f-right p-t-1">
+                    <paper-button tabindex="0" raised colored on-click="saveProfile">Save</paper-button>
+                    <paper-button tabindex="0" raised on-click="closePanel">Cancel</paper-button>
+                </div>
+            </div>
+        </div>
+        
+        <pd-card head="Staff List">
+            <div class="p-relative d-inline-block w-100 p-b-1">
+                <div class="f-right">
+                    <paper-icon-button icon="add" on-tap="openPanel"></paper-icon-button>
+                    <paper-icon-button icon="delete" on-tap="deleteProfiles"></paper-icon-button>
+                    <pd-search id="search" class="f-left"></pd-search>
+                </div>
+            </div>
+            <div class="table">
+                <div class="thead">
+                    <div class="th">
+                        <div class="td"></div>
+                        <div class="td">#</div>
+                        <div class="td">Username</div>
+                        <div class="td">Type</div>
+                        <div class="td"></div>
+                    </div>
+                </div>
+                <div class="tbody">
+                    <template is="dom-repeat" items="{{profiles}}">
+                        <div class="tr">
+                            <div class="td"><paper-checkbox checked="{{item.selected}}"></paper-checkbox></div>
+                            <div class="td">{{item.id}}</div>
+                            <div class="td">{{item.username}}</div>
+                            <div class="td">{{item.type}}</div>
+                            <div class="td t-center"><paper-icon-button icon="editor:mode-edit" 
+                                    data-id$="{{item.id}}" on-tap="openPanel"></paper-icon-button></div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </pd-card>
+        <paper-toast id="toast" text=""></paper-toast>
+        <iron-ajax id="searchProfilesRequest" url="http://localhost:5000/profiles" method="GET" 
+            handle-as="json" on-response="searchProfilesCallback" with-credentials="true"></iron-ajax>
+        <iron-ajax id="saveProfileRequest" url="http://localhost:5000/profiles" handle-as="json" method="POST"
+                   on-response="saveProfileCallback" with-credentials="true"></iron-ajax>
+        <iron-ajax id="deleteProfilesRequest" url="http://localhost:5000/profiles" handle-as="json" method="DELETE"
+                   on-response="deleteProfilesCallback" with-credentials="true"></iron-ajax>
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is:"staff-list",
+        properties:{
+            profiles:{
+                type:Array,
+                value:[]
+            },
+            editModel:{
+                type:Object,
+                notify:true
+            },
+            panelToggle:{
+                type:String,
+                value:"",
+                notify:true
+            }
+        },
+        ready:function(){
+            var self = this;
+            self.searchProfiles();
+            self.$.search.addEventListener("search", function(event){
+                self.searchProfiles(event.detail);
+            });
+            self.$.search.addEventListener("searchClosed", function(event){
+                self.searchProfiles();
+            });
+        },
+        searchProfiles:function(search){
+            var self = this;
+            if(search != null) {
+                self.$.searchProfilesRequest.params["username"] = search;
+            }else{
+                self.$.searchProfilesRequest.params = [];
+            }
+            self.$.searchProfilesRequest.generateRequest();
+        },
+        searchProfilesCallback:function(response){
+            this.profiles = response.detail.response;
+            for(var i in this.profiles){
+                this.profiles[i].selected = false;
+            }
+        },
+        openPanel:function(e){
+            var self = this;
+            self.panelToggle = "toggled";
+
+            var itemClicked = e.detail.sourceEvent.target.parentNode;
+            var id = itemClicked.getAttribute('data-id');
+            for(var i in self.profiles){
+                if(self.profiles[i].id == id){
+                    self.editModel = self.profiles[i];
+                }
+            }
+            if(id == null){
+                self.editModel = {firstName:"",lastName:"",type:"",active:""};
+            }
+        },
+        closePanel:function(){
+            this.panelToggle = "";
+        },
+        saveProfile:function(){
+            this.$.saveProfileRequest.body = JSON.stringify(this.editModel);
+            this.$.saveProfileRequest.contentType = "application/json";
+            this.$.saveProfileRequest.generateRequest();
+        },
+        saveProfileCallback:function(response){
+            this.$.toast.text = "Profile Saved";
+            this.$.toast.show();
+            this.searchProfiles();
+            this.closePanel();
+        },
+        deleteProfiles:function(){
+            var self = this;
+            for(var i=0;i<=self.profiles.length-1;i++){
+                if(self.profiles[i].selected){
+                    self.$.deleteProfilesRequest.url = "http://localhost:5000/profiles/" +self.profiles[i].id;
+                    self.$.deleteProfilesRequest.generateRequest();
+                }
+            };
+        },
+        deleteProfilesCallback:function(){
+            this.$.toast.text = "Item Deleted";
+            this.$.toast.show();
+            this.searchProfiles();
+            this.closePanel();
+        }
+    });
+</script>

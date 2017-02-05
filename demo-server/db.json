@@ -89,13 +89,14 @@
   "profiles": [
     {
       "firstName": "Joy",
-      "lastName": "Johnson x",
+      "lastName": "Johnson",
       "type": "itadmin",
       "username": "joy",
       "active": "Inactive",
       "id": 2,
       "userId": 2,
-      "selected": false
+      "selected": false,
+      "status": "Active"
     },
     {
       "firstName": "Bill",
