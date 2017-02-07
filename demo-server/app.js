@@ -5,7 +5,7 @@ var path         = require("path");
 var jsonServer   = require('../node_modules/json-server');
 var server       = jsonServer.create();
 var router       = jsonServer.router('demo-server/db.json');
- 
+
 // Authentication Libraries - Start
 var cookieParser = require('../node_modules/cookie-parser');
 var session      = require('../node_modules/express-session');
@@ -68,13 +68,24 @@ app.get('/auth/logout', function(req, res){
     res.redirect('/app/pages/auth/auth.html');
 });
 
-
-
-
 app.use(express.static(path.join(__dirname, '../')));
 var http = require('http').Server(app);
-http.listen(8080);
 
-server.use(jsonServer.defaults); // loger, static, and cors middleware
+server.use(jsonServer.defaults); // logger, static and cors middlewares
 server.use(router); // Mount router on '/'
 server.listen(5000);
+
+var io = require('socket.io')(http);
+http.listen(8080);
+io.on('connection', function(socket){
+    socket.on('chat message', function(msg){
+        msg = JSON.parse(msg);
+        io.sockets.in(msg.room).emit('private message', 
+                    JSON.stringify(msg));
+    });
+    socket.on('subscribe', function(msg) {
+        socket.username = msg.user;
+        socket.room = msg.room;
+        socket.join(msg.room);
+    });
+});

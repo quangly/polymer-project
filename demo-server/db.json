@@ -90,16 +90,15 @@
     {
       "firstName": "Joy",
       "lastName": "Johnson",
-      "type": "itadmin",
+      "type": "teacher",
       "username": "joy",
       "active": "Inactive",
       "id": 2,
       "userId": 2,
-      "selected": false,
-      "status": "Active"
+      "selected": false
     },
     {
-      "firstName": "Bill",
+      "firstName": "Billy",
       "lastName": "Stavroulakis",
       "type": "teacher",
       "username": "bill",

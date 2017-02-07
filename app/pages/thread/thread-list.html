@@ -1,0 +1,107 @@
+<link rel="import" href="../../../../../bower_components/paper-input/paper-input.html" />
+<link rel="import" href="../../../../../bower_components/paper-button/paper-button.html" />
+<link rel="import" href="../../../bower_components/iron-a11y-keys/iron-a11y-keys.html" />
+
+<script type="text/javascript" src="../../../node_modules/socket.io-client/socket.io.js"></script>
+
+<dom-module id="thread-list">
+    <link rel="stylesheet" href="thread.css"/>
+    <style>
+        .chat-footer{
+            border-top:1px solid var(--color-neutral-dark);
+            background-color:var(--color-neutral-light);
+        }
+    </style>
+    <template>
+        <div class="p-t-1">
+            <div id="wrapper" class="message-wrapper sidebar-offset-width">
+            <template is="dom-repeat" items="{{messages}}">
+                <div class="message p-t-0-5 p-l-1 p-r-1">
+                    <div class="message-bubble">
+                        <div class="message-user">{{item.user}}</div>
+                        <span>{{item.message}}</span>
+                    </div>
+                    <div class="message-datetime">
+                        <span>{{item.datetime}}</span>
+                    </div>
+                </div>
+            </template>
+            </div>
+
+            <iron-a11y-keys target="{{chatFooter}}" keys="enter" 
+				on-keys-pressed="sendMessage"></iron-a11y-keys>
+            <div id="chatFooter" class="sidebar-offset chat-footer">
+                <div class="respond-input-wrapper">
+                    <paper-input value="{{message}}" label="Respond here" 
+						autofocus no-label-float class="respond-input"></paper-input>
+                </div>
+                <paper-button raised colored class="colorful respond-btn" 
+					on-tap="sendMessage">Send</paper-button>
+            </div>
+        </div>
+        <iron-ajax id="getProfileRequest" url="http://localhost:5000/profile" method="GET" handle-as="json"
+                   on-response="getProfileCallback" with-credentials="true" auto></iron-ajax>
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is:"thread-list",
+        properties:{
+            messages:{
+                type:Array,
+                value:[],
+                notify:true
+            },
+            message:{
+                type:String,
+                notify:true
+            },
+            username:{
+                type:String
+            },
+            conversation:{
+                type:String
+            },
+            socket:{
+                type:Object
+            }
+        },
+        getProfileCallback:function(response){
+            var self = this;
+            self.username = response.detail.response.username;
+            self.messages = [];
+
+            var chatUsername = window.location.hash.split("?username=")[1];
+            var users = [self.username, chatUsername];
+            self.conversation = users.sort().join("-");
+            
+            self.socket = io.connect();
+            self.socket.emit('subscribe', 
+                    {'room':self.conversation,
+                    'user':self.username});
+
+            self.socket.on('private message', function(msg){
+                var msgObj = JSON.parse(msg);
+                self.push("messages", {'user':msgObj.user,
+                    'message':msgObj.message,
+                    'datetime':msgObj.datetime});
+                self.async(function(){
+                    self.$.wrapper.scrollTop = 
+                                self.$.wrapper.scrollHeight;
+                },0);
+            });
+        },
+        sendMessage:function(){
+            if(this.message == "" || this.message == null)
+                return;
+            var message = this.message;
+            var now = new Date();
+            var jsonMessage = JSON.stringify({
+                    'user':this.username,'room':this.conversation,
+                    'message': message,'datetime':now});
+            this.socket.emit('chat message', jsonMessage);
+            this.message = "";
+        }
+    });
+</script>

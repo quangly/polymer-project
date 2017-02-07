@@ -1,0 +1,80 @@
+.chat-footer{
+    padding-bottom: 1em;
+    padding-left: 1em;
+    padding-top:1em;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right:0;
+    box-sizing: border-box;
+}
+.respond-input-wrapper{
+    width:100%;
+    padding-right:7em;
+    box-sizing:border-box;
+}
+.respond-btn{
+    position: absolute;
+    right: 0.5em;
+    bottom: 1em;
+}
+.respond-input{
+    margin-top:0.5em;
+}
+
+.message-wrapper{
+    position: absolute;
+    top: 0;
+    overflow-y: auto;
+    height:calc(100% - 4.6em);
+    left:0;
+    width:100%;
+    right:0;
+}
+
+.message{
+    margin-bottom:0.5em;
+}
+
+.message-user{
+    width:100%;
+    font-size:80%;
+    padding-bottom:0.2em;
+}
+
+.message-bubble
+{
+    position: relative;
+    min-height: 40px;
+    padding: 0.5em;
+    background: #FFFFFF;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    border: #7F7F7F solid 1px;
+}
+
+.left .message-bubble{
+    margin-left:1em;
+}
+
+.right .message-bubble{
+    margin-right:1em;
+}
+
+.message-datetime {
+    font-size: 70%;
+    padding-top: 0.2em;
+    font-style: italic;
+}
+
+.left .message-datetime{
+    text-align: right;
+    padding-right: 1em;
+}
+
+.right .message-datetime{
+    text-align: left;
+    padding-left: 1em;
+}
+

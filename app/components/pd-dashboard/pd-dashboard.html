@@ -1,7 +1,6 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../components/pd-drawer/pd-drawer.html">
 
-
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html"/>
 <link rel="import" href="../../../bower_components/iron-icon/iron-icon.html" />
 <link rel="import" href="../../../app/components/pd-list/pd-list-item.html" />
@@ -12,9 +11,9 @@
 <dom-module id="pd-dashboard">
     <link rel="stylesheet" href="../../../app/css/main.css" />
     <link rel="stylesheet" href="../../../app/css/position.css" />
-    <link rel="stylesheet" href="../../../app/css/font.css" />    
+    <link rel="stylesheet" href="../../../app/css/font.css" />
     <link rel="stylesheet" href="../../../app/css/skins/default/colors.css"/>
-    <link rel="import"      href="../../../app/css/skins/default/color-vars.css"/>    
+    <link rel="import"  href="../../../app/css/skins/default/color-vars.css"/>
     <template>
         <pd-drawer>
             <div class="logo">Logo here</div>
@@ -25,14 +24,20 @@
                 <pd-list-item position="left" icon="exit-to-app" url="/auth/logout">Logout</pd-list-item>
             </div>
             <div class="right-menu">
-                Right Menu here
+                <template is="dom-repeat" items="{{friends}}">
+                    <pd-list-item position="left" icon="face" url="{{item.url}}">{{item.name}}</pd-list-item>
+                </template>
             </div>
             <div id="main">
                 Main stuff here
             </div>
         </pd-drawer>
         <pd-flatiron-director route="{{route}}"></pd-flatiron-director>
-        <iron-ajax id="ajax" url="" handle-as="document"></iron-ajax>              
+        <iron-ajax id="ajax" url="" handle-as="document"></iron-ajax>
+        <iron-ajax id="getProfileRequest" url="http://localhost:5000/profile" method="GET" handle-as="json"
+                   on-response="getProfileCallback" with-credentials="true" auto></iron-ajax>
+        <iron-ajax id="getFriendsRequest" url="http://localhost:5000/friends" method="GET" handle-as="json"
+                   on-response="getFriendsCallback" with-credentials="true"></iron-ajax>
     </template>
 </dom-module>
 
@@ -44,6 +49,24 @@
                 type:String,
                 notify:true,
                 observer: 'routeChanged'
+            },
+            friends:{
+                type:Array,
+                notify:true
+            }
+        },
+        getProfileCallback:function(response){
+            this.getFriends(response.detail.response.username);
+        },
+        getFriends: function(username){
+            this.$.getFriendsRequest.params["username"] = username;
+            this.$.getFriendsRequest.generateRequest();
+        },
+        getFriendsCallback:function(response){
+            var self = this;
+            self.friends = response.detail.response[0].friends;
+            for(var i in self.friends){
+                self.friends[i].url = "#!/thread?username=" + self.friends[i].username;
             }
         },
         routeChanged: function (newValue, oldValue) {
