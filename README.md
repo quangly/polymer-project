@@ -16,3 +16,4 @@ Web Dashboard built in Polymer
 # user
 * http://localhost:8080/ Web App
 * http://localhost:5000/ Json Server
+* http://localhost:8080/tests/ Testing Components
